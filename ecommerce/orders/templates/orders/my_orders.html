@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+</head>
+<body>
+
+<h2>📦 My Orders</h2>
+
+{% if orders %}
+    {% for order in orders %}
+        <hr>
+        <h3>Order #{{ order.id }}</h3>
+        <p>Status: {{ order.status }}</p>
+        <p>Placed on: {{ order.created_at }}</p>
+
+        <ul>
+            {% for item in order.items.all %}
+                <li>
+                    {{ item.product.name }} —
+                    Qty: {{ item.quantity }} —
+                    Price: {{ item.price }}
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% endfor %}
+{% else %}
+    <p>You have not placed any orders yet.</p>
+{% endif %}
+
+<a href="{% url 'product-list' %}">Back to Products</a>
+
+</body>
+</html>

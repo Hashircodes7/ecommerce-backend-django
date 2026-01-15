@@ -1,0 +1,78 @@
+{% extends 'cart/base.html' %}  {# updated to point to cart app base.html #}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+{# 🔹 Show success / error messages #}
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if cart.items.all %}
+<table border="1" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for item in cart.items.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>${{ item.product.price }}</td>
+
+            <td>
+                <form action="{% url 'update-cart' item.product.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="number"
+                           name="quantity"
+                           value="{{ item.quantity }}"
+                           min="0">
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+
+            <td>${{ item.total_price }}</td>
+
+            <td>
+                <a href="{% url 'remove-cart' item.product.id %}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+<hr>
+
+<p><strong>Total Items:</strong> {{ cart.total_quantity }}</p>
+<p><strong>Total Price:</strong> ${{ cart.total_price }}</p>
+
+<hr>
+
+<form method="post" action="{% url 'create-order' %}">
+    {% csrf_token %}
+    <button type="submit">Place Order</button>
+</form>
+
+<br>
+
+<a href="{% url 'clear-cart' %}">Clear Cart</a> |
+<a href="{% url 'product-list' %}">Continue Shopping</a>
+
+{% else %}
+
+<p>Your cart is empty.</p>
+<a href="{% url 'product-list' %}">Shop Now</a>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+<!-- templates/products/specproduct.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+    <style>
+        .product-detail { max-width: 600px; margin: auto; }
+        .product-detail img { width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+
+    <div class="product-detail">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        <p>Price: ${{ product.price }}</p>
+        <p>Stock: {{ product.stock }}</p>
+        <p>Category: {{ product.category.name }}</p>
+        <p>Description: {{ product.desc }}</p>
+        <p>Created At: {{ product.created_at|date:"d M Y H:i" }}</p>
+        <p>Last Updated: {{ product.updated_at|date:"d M Y H:i" }}</p>
+        <p>Status: {% if product.is_active %} Active {% else %} Inactive {% endif %}</p>
+    </div>
+
+    <p><a href="{% url 'product-list' %}">Back to all products</a></p>
+</body>
+</html>
