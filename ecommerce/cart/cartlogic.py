@@ -18,14 +18,16 @@ def add_to_Cart(user,product_id,quantity=1):
     if product.stock < quantity:
         raise ValueError("Not enough stock available.") 
     
-    try:
-        cartitem=CartItem.objects.get(cart=cart,product=product) 
-    except CartItem.DoesNotExist:
-        cartitem=CartItem.objects.create(cart=cart,product=product) 
     
-    if product.stock < cartitem.quantity+quantity: 
-        raise ValueError("Not enough stock available.")
-    cartitem.quantity+=quantity
+    cartitem,created=CartItem.objects.get_or_create(cart=cart,product=product) 
+    
+    if created:
+        cartitem.quantity=quantity
+    else:
+        if product.stock < cartitem.quantity+quantity: 
+            raise ValueError("Not enough stock available.")
+        cartitem.quantity+=quantity
+    
     cartitem.save()
 
 @transaction.atomic
